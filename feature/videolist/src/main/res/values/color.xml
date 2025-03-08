@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- 基础色 -->
+    <color name="color_primary">#6200EE</color>
+    <color name="color_primary_variant">#3700B3</color>
+    <color name="color_secondary">#03DAC6</color>
+    <color name="color_secondary_variant">#018786</color>
+    <color name="color_accent">#FF4081</color>
+
+    <!-- 常见灰度色 -->
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_900">#212121</color>
+
+    <!-- 状态颜色 -->
+    <color name="color_success">#4CAF50</color>
+    <color name="color_warning">#FFC107</color>
+    <color name="color_error">#F44336</color>
+    <color name="color_info">#2196F3</color>
+
+    <!-- 背景和文本颜色 -->
+    <color name="background_light">#FFFFFF</color>
+    <color name="background_dark">#121212</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="divider">#BDBDBD</color>
+
+    <!-- 自定义渐变色 -->
+    <color name="gradient_start">#FF6F00</color>
+    <color name="gradient_end">#D84315</color>
+
+    <!-- 半透明色 -->
+    <color name="black_50">#80000000</color> <!-- 50% 透明的黑色 -->
+    <color name="white_70">#B3FFFFFF</color> <!-- 70% 透明的白色 -->
+
+    <!-- 自定义按钮颜色 -->
+    <color name="button_enabled">#6200EE</color>
+    <color name="button_disabled">#BDBDBD</color>
+    <color name="button_pressed">#3700B3</color>
+
+    <!-- 主要红色 -->
+    <color name="red_primary">#F44336</color> <!-- Material Red 500 -->
+    <color name="red_primary_variant">#D32F2F</color> <!-- Material Red 700 -->
+    <color name="red_secondary">#FF5252</color> <!-- Material Red A200 -->
+    <color name="red_secondary_variant">#FF1744</color> <!-- Material Red A400 -->
+
+    <!-- 亮红色主色 -->
+    <color name="bright_red">#FF3B30</color> <!-- iOS警告红 -->
+    <color name="bright_red_variant">#FF2D55</color> <!-- 偏粉亮红 -->
+
+    <!-- 高亮红色 -->
+    <color name="high_bright_red">#FF0000</color> <!-- 纯红 -->
+    <color name="bright_red_light">#FF6161</color> <!-- 浅亮红 -->
+    <color name="bright_red_dark">#D50000</color> <!-- 深亮红 -->
+
+    <!-- 不同深浅的红色 -->
+    <color name="red_50">#FFEBEE</color>  <!-- 非常浅 -->
+    <color name="red_100">#FFCDD2</color>
+    <color name="red_200">#EF9A9A</color>
+    <color name="red_300">#E57373</color>
+    <color name="red_400">#EF5350</color>
+    <color name="red_500">#F44336</color>  <!-- 标准红 -->
+    <color name="red_600">#E53935</color>
+    <color name="red_700">#D32F2F</color>
+    <color name="red_800">#C62828</color>
+    <color name="red_900">#B71C1C</color>  <!-- 非常深 -->
+
+    <!-- 半透明红色 -->
+    <color name="red_50_transparent">#80F44336</color> <!-- 50% 透明 -->
+    <color name="red_70_transparent">#B3F44336</color> <!-- 70% 透明 -->
+    <color name="red_30_transparent">#4DF44336</color> <!-- 30% 透明 -->
+
+    <!-- 渐变色可用的红色 -->
+    <color name="gradient_red_start">#FF6F61</color>
+    <color name="gradient_red_end">#D84315</color>
+</resources>
