@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.andy.common.visible
 import com.andy.videolist.databinding.ItemVideoBinding
 import com.andy.videolist.domain.model.VideoItem
 import com.andy.videolist.utils.getAdaptiveVideoUrl
@@ -45,10 +44,10 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
             error(android.R.color.black)
         }
         // TODO 调试使用，标记当前是第几个
-        holder.binding.textPosition.apply {
-            visible()
-            text = "第 ${position + 1} 个"
-        }
+//        holder.binding.textPosition.apply {
+//            visible()
+//            text = "第 ${position + 1} 个"
+//        }
     }
 
     override fun onViewAttachedToWindow(holder: VideoViewHolder) {

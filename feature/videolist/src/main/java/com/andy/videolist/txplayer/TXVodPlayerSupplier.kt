@@ -65,7 +65,7 @@ object TXVodPlayerSupplier {
                             onPlayStart()
                         }
 
-                        TXLiveConstants.PLAY_ERR_NET_DISCONNECT -> {
+                        TXLiveConstants.PLAY_WARNING_RECONNECT -> {
                             // 视频数据错误导致重试亦不能恢复正常播放。如：网络异常或下载数据错误，导致解封装超时或失败。
                             onPlayError(
                                 context.getString(R.string.network_disconnected),

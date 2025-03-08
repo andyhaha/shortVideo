@@ -1,6 +1,8 @@
 package com.andy.videolist.ui
 
 import android.util.Log
+import android.util.SparseArray
+import android.widget.Toast
 import com.andy.common.gone
 import com.andy.common.visible
 import com.andy.videolist.txplayer.TXVodPlayerSupplier
@@ -11,7 +13,12 @@ import com.andy.videolist.txplayer.TXVodPlayerSupplier
  * 该类的核心功能是确保播放器在 RecyclerView 中滚动时正常播放和暂停，
  * 并在视图离屏时释放资源。
  */
-class TXVodPlayerHelper: SimpleLifeCycle {
+class TXVodPlayerHelper : SimpleLifeCycle {
+
+    /**
+     * 存储当前播放器在RecyclerView中的位置和播放时间
+     */
+    private val positionToPlaybackTime = SparseArray<Float>()
 
     /**
      * 缓存当前Attach到RecyclerView的ViewHolder和播放器，最多存储3个
@@ -50,12 +57,18 @@ class TXVodPlayerHelper: SimpleLifeCycle {
         videoViewHolder: VideoListAdapter.VideoViewHolder,
         videoUrl: String
     ) {
+        val context = videoViewHolder.binding.root.context
         TXVodPlayerWrapper(
             player = TXVodPlayerSupplier.createPlayer(
-                context = videoViewHolder.binding.root.context,
+                context = context,
                 onPlayStart = {
                     videoViewHolder.binding.progressBar.gone()
                     videoViewHolder.binding.imagePause.gone()
+                },
+                onPlayError = { error, code ->
+//                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+//                    videoViewHolder.binding.coverImage.gone()
+                    Log.d("TXVodPlayer", "onPlayError: $error, $code")
                 }
             ),
             holder = videoViewHolder
@@ -63,6 +76,9 @@ class TXVodPlayerHelper: SimpleLifeCycle {
             // setAutoPlay 设置为false，不会立刻开始播放，而只会开始加载视频
             player.setAutoPlay(false)
             player.startVodPlay(videoUrl)
+            val currentPlaybackTime =
+                positionToPlaybackTime.get(videoViewHolder.adapterPosition, 0f)
+            player.seek(currentPlaybackTime, true)
             player.pause()
         }.also {
             playerWrappers.add(it)
@@ -84,7 +100,10 @@ class TXVodPlayerHelper: SimpleLifeCycle {
                 item.player.setVodListener(null)
                 item.player.stopPlay(true)
                 iterator.remove()
-                Log.d("ViewPager2", "View 离屏 playerWrappers.size : ${playerWrappers.size}")
+                Log.d(
+                    "ViewPager2", "第${item.holder.adapterPosition}个" +
+                            "离屏, playerWrappers.size : ${playerWrappers.size}"
+                )
                 break
             }
         }
@@ -107,7 +126,11 @@ class TXVodPlayerHelper: SimpleLifeCycle {
                 "ViewPager2", "第${it.holder.adapterPosition + 1}" +
                         "页播放暂停, 当前进度: ${it.player.currentPlaybackTime}"
             )
-            it.currentPlaybackTime = it.player.currentPlaybackTime
+            // 记录当前播放器在RecyclerView Adapter中的位置和播放时间
+            positionToPlaybackTime.put(
+                it.holder.adapterPosition,
+                it.player.currentPlaybackTime
+            )
             it.player.pause()
         }
 
@@ -115,11 +138,14 @@ class TXVodPlayerHelper: SimpleLifeCycle {
         playerWrappers.find {
             it.holder.adapterPosition == position
         }?.let {
-            Log.d("ViewPager2", "当前屏幕是第${position + 1}页, " +
-                    "播放进度: ${it.player.currentPlaybackTime}")
+            val currentPlaybackTime = positionToPlaybackTime.get(position, 0f)
             it.player.setPlayerView(it.holder.binding.videoView)
-            it.player.seek(it.currentPlaybackTime)
+            it.player.seek(currentPlaybackTime, true)
             it.player.resume()
+            Log.d(
+                "ViewPager2", "当前屏幕是第${position + 1}页, " +
+                        "播放进度: $currentPlaybackTime"
+            )
             if (it.player.isPlaying) {
                 Log.d("ViewPager2", "第${position + 1}页播放11111111")
                 it.holder.binding.imagePause.gone()
