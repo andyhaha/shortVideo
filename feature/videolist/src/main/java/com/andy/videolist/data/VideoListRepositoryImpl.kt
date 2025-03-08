@@ -2,6 +2,7 @@ package com.andy.videolist.data
 
 
 import android.content.Context
+import com.andy.videolist.data.model.VideoListBean
 import com.andy.videolist.domain.model.VideoItem
 import com.andy.videolist.domain.repository.VideoListRepository
 import com.squareup.moshi.Moshi

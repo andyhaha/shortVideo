@@ -9,8 +9,15 @@ import com.andy.videolist.databinding.ItemVideoBinding
 import com.andy.videolist.domain.model.VideoItem
 import com.andy.videolist.utils.getAdaptiveVideoUrl
 
+/**
+ * 视频列表适配器
+ */
 class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(), SimpleLifeCycle {
     private val items: MutableList<VideoItem> = mutableListOf()
+
+    /**
+     * 视频帮助类
+     */
     private val playerHelper by lazy(LazyThreadSafetyMode.NONE) {
         TXVodPlayerHelper()
     }
@@ -43,11 +50,6 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
             placeholder(android.R.color.black)
             error(android.R.color.black)
         }
-        // TODO 调试使用，标记当前是第几个
-//        holder.binding.textPosition.apply {
-//            visible()
-//            text = "第 ${position + 1} 个"
-//        }
     }
 
     override fun onViewAttachedToWindow(holder: VideoViewHolder) {

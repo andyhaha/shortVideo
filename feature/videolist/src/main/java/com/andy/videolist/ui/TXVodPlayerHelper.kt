@@ -2,7 +2,6 @@ package com.andy.videolist.ui
 
 import android.util.Log
 import android.util.SparseArray
-import android.widget.Toast
 import com.andy.common.gone
 import com.andy.common.visible
 import com.andy.videolist.txplayer.TXVodPlayerSupplier
@@ -64,11 +63,6 @@ class TXVodPlayerHelper : SimpleLifeCycle {
                 onPlayStart = {
                     videoViewHolder.binding.progressBar.gone()
                     videoViewHolder.binding.imagePause.gone()
-                },
-                onPlayError = { error, code ->
-//                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-//                    videoViewHolder.binding.coverImage.gone()
-                    Log.d("TXVodPlayer", "onPlayError: $error, $code")
                 }
             ),
             holder = videoViewHolder

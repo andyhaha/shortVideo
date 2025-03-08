@@ -36,15 +36,4 @@
         android:contentDescription="@string/pause_image"
         android:visibility="gone"/>
 
-    <!-- 显示当前是第几个视频 调试使用 -->
-    <TextView
-        android:id="@+id/text_position"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:paddingBottom="20dp"
-        android:textSize="32sp"
-        android:textColor="@color/white"
-        android:visibility="gone"/>
-
 </FrameLayout>
