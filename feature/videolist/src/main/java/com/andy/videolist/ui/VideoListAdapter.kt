@@ -1,6 +1,6 @@
 package com.andy.videolist.ui
 
-import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +43,6 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
         return VideoViewHolder(binding)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
         val item = items[position]
         holder.binding.coverImage.load(item.coverUrl) {
@@ -54,11 +53,11 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
 
     override fun onViewAttachedToWindow(holder: VideoViewHolder) {
         super.onViewAttachedToWindow(holder)
-//        Log.d("ViewPager2", "View 加入屏幕 第${holder.adapterPosition + 1}页")
+        Log.d("ViewPager2", "View 加入屏幕 第${holder.adapterPosition + 1}页")
         val videoItem = items[holder.adapterPosition]
         val context = holder.binding.root.context
         val videoUrl = videoItem.getAdaptiveVideoUrl(context)
-//        Log.d("ViewPager2", "View 加入屏幕 第${holder.adapterPosition + 1}页, videoUrl = $videoUrl")
+        Log.d("ViewPager2", "View 加入屏幕 第${holder.adapterPosition + 1}页, videoUrl = $videoUrl")
 
         playerHelper.createAndAddPlayerWrapper(
             videoViewHolder = holder,
@@ -68,7 +67,7 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
 
     override fun onViewDetachedFromWindow(holder: VideoViewHolder) {
         super.onViewDetachedFromWindow(holder)
-//        Log.d("ViewPager2", "View 离屏 第${holder.adapterPosition + 1}页")
+        Log.d("ViewPager2", "View 离屏 第${holder.adapterPosition + 1}页")
         playerHelper.pauseAndRemoveOffscreenPlayer(holder)
     }
 
