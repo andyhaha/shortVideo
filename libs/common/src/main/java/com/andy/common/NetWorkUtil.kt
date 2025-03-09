@@ -5,10 +5,10 @@ package com.andy.common
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
 
 /**
  * 网络状态工具类，用于检查设备的网络连接状态。
- * 提供方法来判断是否连接网络、当前是否连接 Wi-Fi、以及当前是否为移动数据网络等。
  */
 object NetworkUtil {
 
@@ -17,88 +17,101 @@ object NetworkUtil {
      * @param context 上下文
      * @return true: 连接网络，false: 没有连接网络
      */
+    @JvmStatic
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetworkInfo
-        return activeNetwork != null && activeNetwork.isConnected
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        } else {
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            activeNetwork?.isConnected == true
+        }
     }
 
     /**
      * 判断当前设备是否没有连接到网络
-     * @param context 上下文
-     * @return true: 没有连接网络，false: 连接网络
      */
+    @JvmStatic
     fun isNetworkUnavailable(context: Context): Boolean {
         return !isNetworkAvailable(context)
     }
 
     /**
      * 判断当前设备是否连接到Wi-Fi
-     * @param context 上下文
-     * @return true: 当前连接 Wi-Fi，false: 当前连接非 Wi-Fi 网络
      */
+    @JvmStatic
     fun isWifiConnected(context: Context): Boolean {
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetworkInfo
-        return activeNetwork?.type == ConnectivityManager.TYPE_WIFI
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+        } else {
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            activeNetwork?.type == ConnectivityManager.TYPE_WIFI
+        }
     }
 
     /**
      * 判断当前设备是否连接到移动数据网络
-     * @param context 上下文
-     * @return true: 当前连接 移动数据网络，false: 当前连接其他类型的网络
      */
-    fun isMobileDataConnected(context: Context): Boolean {
+    @JvmStatic
+    fun isMobileConnected(context: Context): Boolean {
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetworkInfo
-        return activeNetwork?.type == ConnectivityManager.TYPE_MOBILE
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+        } else {
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            activeNetwork?.type == ConnectivityManager.TYPE_MOBILE
+        }
     }
 
     /**
      * 获取当前网络的类型（Wi-Fi 或 移动数据）
-     * @param context 上下文
-     * @return "WIFI" 或 "MOBILE" 或 "NONE"（如果没有网络连接）
+     * @return "WIFI"、"MOBILE" 或 "NONE"（如果没有网络连接）
      */
+    @JvmStatic
     fun getNetworkType(context: Context): String {
         val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetworkInfo
-        return when {
-            activeNetwork == null -> "NONE" // 没有网络连接
-            activeNetwork.type == ConnectivityManager.TYPE_WIFI -> "WIFI"
-            activeNetwork.type == ConnectivityManager.TYPE_MOBILE -> "MOBILE"
-            else -> "UNKNOWN"
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val network = connectivityManager.activeNetwork ?: return "NONE"
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return "NONE"
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "WIFI"
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "MOBILE"
+                else -> "UNKNOWN"
+            }
+        } else {
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            when (activeNetwork?.type) {
+                ConnectivityManager.TYPE_WIFI -> "WIFI"
+                ConnectivityManager.TYPE_MOBILE -> "MOBILE"
+                else -> "NONE"
+            }
         }
     }
 
     /**
      * 判断当前网络是否是Wi-Fi
-     * @param context 上下文
-     * @return true: 网络是 Wi-Fi，false: 其他类型
      */
+    @JvmStatic
     fun isConnectedToWifi(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork
-        val capabilities = connectivityManager.getNetworkCapabilities(network)
-
-        return capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+        return isWifiConnected(context)
     }
 
     /**
      * 判断当前网络是否是移动数据
-     * @param context 上下文
-     * @return true: 网络是 移动数据，false: 其他类型
      */
-    fun isConnectedToMobileData(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork
-        val capabilities = connectivityManager.getNetworkCapabilities(network)
-
-        return capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+    @JvmStatic
+    fun isConnectedToMobile(context: Context): Boolean {
+        return isMobileConnected(context)
     }
 }

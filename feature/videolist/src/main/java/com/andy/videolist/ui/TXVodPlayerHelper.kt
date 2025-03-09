@@ -67,6 +67,7 @@ class TXVodPlayerHelper : SimpleLifeCycle {
             ),
             holder = videoViewHolder
         ).apply {
+            player.setPlayerView(holder.binding.videoView)
             // setAutoPlay 设置为false，不会立刻开始播放，而只会开始加载视频
             player.setAutoPlay(false)
             player.startVodPlay(videoUrl)
@@ -133,15 +134,13 @@ class TXVodPlayerHelper : SimpleLifeCycle {
             it.holder.adapterPosition == position
         }?.let {
             val currentPlaybackTime = positionToPlaybackTime.get(position, 0f)
-            it.player.setPlayerView(it.holder.binding.videoView)
-            it.player.seek(currentPlaybackTime, true)
             it.player.resume()
+            it.player.seek(currentPlaybackTime, true)
             Log.d(
                 "ViewPager2", "当前屏幕是第${position + 1}页, " +
                         "播放进度: $currentPlaybackTime"
             )
             if (it.player.isPlaying) {
-                Log.d("ViewPager2", "第${position + 1}页播放11111111")
                 it.holder.binding.imagePause.gone()
                 it.holder.binding.progressBar.gone()
             }

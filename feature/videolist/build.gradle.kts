@@ -39,15 +39,15 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    // debugImplementation because LeakCanary should only run in debug builds.
+//     debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation(libs.squareup.leakcanary.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
 
     implementation(libs.liteavsdk.ugc)
     implementation(libs.coil)
