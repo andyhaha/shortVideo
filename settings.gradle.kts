@@ -23,3 +23,4 @@ rootProject.name = "shortVideo"
 include(":app")
 include(":feature:videolist")
 include(":libs:common")
+include(":libs:flexplayer")

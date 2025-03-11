@@ -61,6 +61,8 @@ dependencies {
 
     ksp(libs.google.dagger.hilt.compiler)
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.androidx.media3.exoplayer)
 
     implementation(project(":feature:videolist"))
+    implementation(project(":libs:flexplayer"))
 }
