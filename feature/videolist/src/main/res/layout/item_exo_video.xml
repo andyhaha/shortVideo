@@ -18,6 +18,7 @@
         android:layout_height="match_parent"
         app:use_controller="false"
         app:show_buffering="when_playing"
+        app:resize_mode="fixed_height"
         android:visibility="visible"/>
 
     <ImageView

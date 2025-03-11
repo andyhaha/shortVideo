@@ -15,7 +15,6 @@
             <option value="$PROJECT_DIR$/feature/videolist" />
             <option value="$PROJECT_DIR$/libs" />
             <option value="$PROJECT_DIR$/libs/common" />
-            <option value="$PROJECT_DIR$/libs/flexplayer" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

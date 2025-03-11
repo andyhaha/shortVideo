@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.andy.videolist.databinding.ItemExoVideoBinding
-import com.andy.videolist.databinding.ItemVideoBinding
 import com.andy.videolist.domain.model.VideoItem
+import com.andy.videolist.exoplayer.ExoPlayerHelper
 import com.andy.videolist.utils.getAdaptiveVideoUrl
 
 /**

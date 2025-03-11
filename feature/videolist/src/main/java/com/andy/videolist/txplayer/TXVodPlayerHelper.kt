@@ -1,10 +1,11 @@
-package com.andy.videolist.ui
+package com.andy.videolist.txplayer
 
 import android.util.Log
 import android.util.SparseArray
 import com.andy.common.gone
 import com.andy.common.visible
-import com.andy.videolist.txplayer.TXVodPlayerSupplier
+import com.andy.videolist.ui.SimpleLifeCycle
+import com.andy.videolist.ui.VideoListAdapter
 
 /**
  * TXVodPlayerHelper 负责管理多个视频播放器的生命周期和状态。

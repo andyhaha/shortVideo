@@ -1,9 +1,10 @@
-package com.andy.videolist.ui
+package com.andy.videolist.exoplayer
 
 import androidx.media3.exoplayer.ExoPlayer
+import com.andy.videolist.ui.ExoVideoListAdapter
 
 /**
- * TXVodPlayer的包装类，包含TXVodPlayer、VideoViewHolder和isManualPaused
+ * ExoPlayer的包装类，包含ExoPlayer、VideoViewHolder和isManualPaused
  */
 data class ExoPlayerWrapper(
     val player: ExoPlayer,

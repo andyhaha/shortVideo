@@ -1,5 +1,6 @@
-package com.andy.videolist.ui
+package com.andy.videolist.txplayer
 
+import com.andy.videolist.ui.VideoListAdapter
 import com.tencent.rtmp.TXVodPlayer
 
 /**

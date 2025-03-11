@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.andy.videolist.databinding.ItemVideoBinding
 import com.andy.videolist.domain.model.VideoItem
+import com.andy.videolist.txplayer.TXVodPlayerHelper
 import com.andy.videolist.utils.getAdaptiveVideoUrl
 
 /**

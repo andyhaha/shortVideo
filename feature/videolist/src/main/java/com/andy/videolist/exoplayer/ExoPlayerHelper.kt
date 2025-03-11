@@ -1,34 +1,21 @@
-package com.andy.videolist.ui
+package com.andy.videolist.exoplayer
 
 import android.util.Log
 import android.util.SparseArray
 import androidx.annotation.OptIn
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DefaultHttpDataSource
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.exoplayer.DefaultLoadControl
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.PlayerView
 import com.andy.common.gone
 import com.andy.common.visible
-import com.andy.videolist.exoplayer.ExoPlayerManager
-import com.andy.videolist.exoplayer.ExoPlayerSupplier
-import com.andy.videolist.txplayer.TXVodPlayerSupplier
+import com.andy.videolist.ui.ExoVideoListAdapter
+import com.andy.videolist.ui.SimpleLifeCycle
 
 /**
- * TXVodPlayerHelper 负责管理多个视频播放器的生命周期和状态。
+ * ExoPlayerHelper 负责管理多个视频播放器的生命周期和状态。
  * 它支持视频播放/暂停切换、播放器创建与销毁、以及播放器的状态更新。
  * 该类的核心功能是确保播放器在 RecyclerView 中滚动时正常播放和暂停，
  * 并在视图离屏时释放资源。
  */
-class ExoPlayerHelper2 : SimpleLifeCycle {
+class ExoPlayerHelper : SimpleLifeCycle {
 
     /**
      * 存储当前播放器在RecyclerView中的位置和播放时间
@@ -73,64 +60,27 @@ class ExoPlayerHelper2 : SimpleLifeCycle {
         videoViewHolder: ExoVideoListAdapter.VideoViewHolder,
         videoUrl: String
     ) {
-        val mediaItem = MediaItem.fromUri(videoUrl)
-
-// 缓存数据源
-        val cacheDataSourceFactory = CacheDataSource.Factory()
-            .setCache(ExoPlayerManager.simpleCache!!)
-            .setUpstreamDataSourceFactory(
-                DefaultHttpDataSource.Factory().setUserAgent("MyCustomUserAgent") // ✅ 添加 UserAgent
-            )
-            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
-
-        // HLS 视频资源
-        val mediaSource = HlsMediaSource
-            .Factory(cacheDataSourceFactory)
-            .createMediaSource(mediaItem)
-
         val context = videoViewHolder.binding.root.context
 
-        // 自定义缓冲策略
-        val loadControl = DefaultLoadControl.Builder()
-            .setBufferDurationsMs(5_000, 15_000, 2_000, 2_000)
-            .setTargetBufferBytes(C.LENGTH_UNSET)  // ✅ 避免冲突
-            .setPrioritizeTimeOverSizeThresholds(true)  // ✅ 保持优先时间
-            .build()
-
-        // 创建 ExoPlayer 实例
-        val exoPlayer = ExoPlayer.Builder(context)
-            .setLoadControl(loadControl)  // ✅ 设置 LoadControl
-            .build().apply {
-                setMediaSource(mediaSource) // ✅ 手动设置 MediaSource
-                prepare()  // ✅ 确保播放器准备就绪
-                playWhenReady = true  // ✅ 直接播放
-                repeatMode = Player.REPEAT_MODE_ONE  // ✅ 设置循环播放
-            }
-
-
         ExoPlayerWrapper(
-//            player = ExoPlayerSupplier.createPlayer(
-//                context = context,
-//                onPlayStart = {
-////                    videoViewHolder.binding.progressBar.gone()
+            player = ExoPlayerSupplier.initializeExoPlayer(
+                context = context,
+                videoUrl = videoUrl,
+                onPlayStart = {
 //                    videoViewHolder.binding.imagePause.gone()
 //                    videoViewHolder.binding.coverImage.gone()
-//                }
-//            ),
-            player = exoPlayer,
+//                    videoViewHolder.binding.playerView.visible()
+                }
+            ),
             holder = videoViewHolder
         ).apply {
-//            holder.binding.videoView.resizeMode= AspectRatioFrameLayout.RESIZE_MODE_FILL
-//
-//
-//
-//            val currentPlaybackTime =
-//                positionToPlaybackTime.get(videoViewHolder.bindingAdapterPosition, 0L)
-//            player.seekTo(currentPlaybackTime)
-//            player.prepare()
-//            player.playWhenReady = true
+            val currentPlaybackTime =
+                positionToPlaybackTime.get(videoViewHolder.bindingAdapterPosition, 0L)
+            if (currentPlaybackTime > 0) {
+                player.seekTo(currentPlaybackTime)
+            }
+            player.playWhenReady = false
         }.also {
-//            videoViewHolder.binding.videoView.player = it.player
             playerWrappers.add(it)
         }
     }
@@ -142,20 +92,22 @@ class ExoPlayerHelper2 : SimpleLifeCycle {
      * @param videoViewHolder 当前视频项的 ViewHolder，表示要操作的播放器所在的视图
      */
     fun pauseAndRemoveOffscreenPlayer(videoViewHolder: ExoVideoListAdapter.VideoViewHolder) {
+        videoViewHolder.binding.playerView.player?.pause()
+
         val iterator = playerWrappers.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (item.holder.bindingAdapterPosition == videoViewHolder.bindingAdapterPosition) {
-                // remove listener
                 item.holder.binding.playerView.player = null
                 item.player.stop()
                 item.player.release()
                 iterator.remove()
 
-                videoViewHolder.binding.playerView.player?.pause()
                 Log.d(
                     "ViewPager2", "第${item.holder.bindingAdapterPosition + 1}个" +
-                            "离屏, playerWrappers.size : ${playerWrappers.size}"
+                            "离屏, playerWrappers.size : ${playerWrappers.size}, " +
+                            "videoViewHolder.binding.playerView.player: ${videoViewHolder.binding.playerView.player}, " +
+                            "item.holder.binding.playerView.player: ${item.holder.binding.playerView.player}"
                 )
                 break
             }
@@ -174,6 +126,7 @@ class ExoPlayerHelper2 : SimpleLifeCycle {
         // 找到前一个播放器，暂停并记录当前播放时间
         playerWrappers.find {
             it.holder.bindingAdapterPosition == lastPosition
+                    && lastPosition != currentPosition
         }?.let {
             Log.d(
                 "ViewPager2", "第${it.holder.bindingAdapterPosition + 1}" +
@@ -184,7 +137,6 @@ class ExoPlayerHelper2 : SimpleLifeCycle {
                 it.holder.bindingAdapterPosition,
                 it.player.currentPosition
             )
-//            it.player.pause()
             it.player.playWhenReady = false
         }
 
@@ -194,17 +146,16 @@ class ExoPlayerHelper2 : SimpleLifeCycle {
         }?.let {
             val currentPlaybackTime = positionToPlaybackTime.get(position, 0L)
             it.holder.binding.playerView.player = it.player
-            it.player.seekTo(currentPlaybackTime)
-            it.player.prepare()
+            if (currentPlaybackTime > 0) {
+                it.player.seekTo(currentPlaybackTime)
+            }
             it.player.playWhenReady = true
 
             Log.d(
                 "ViewPager2", "当前屏幕是第${position + 1}页, " +
-                        "播放进度: $currentPlaybackTime"
+                        "播放进度: $currentPlaybackTime, it.player.isPlaying: " +
+                        "${it.player.isPlaying}"
             )
-            if (it.player.isPlaying) {
-                it.holder.binding.imagePause.gone()
-            }
         }
     }
 

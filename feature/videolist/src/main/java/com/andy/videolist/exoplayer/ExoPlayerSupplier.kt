@@ -1,23 +1,18 @@
 package com.andy.videolist.exoplayer
 
 import android.content.Context
-import android.os.Bundle
 import android.util.Log
 import androidx.media3.common.C
+import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.DefaultLoadControl
-import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import com.andy.videolist.R
-import com.tencent.rtmp.ITXVodPlayListener
-import com.tencent.rtmp.TXLiveConstants
-import com.tencent.rtmp.TXVodPlayConfig
-import com.tencent.rtmp.TXVodPlayer
 
 @UnstableApi
 object ExoPlayerSupplier {
@@ -25,8 +20,7 @@ object ExoPlayerSupplier {
 
     fun createPlayer(
         context: Context,
-        onPlayStart: () -> Unit = {},
-        onPlayError: (error: String, code: Int) -> Unit = { _, _ -> },
+        onPlayStart: () -> Unit = {}
     ): ExoPlayer {
         val loadControl = DefaultLoadControl.Builder()
             .setBufferDurationsMs(500, 10_000, 500, 500)
@@ -56,13 +50,16 @@ object ExoPlayerSupplier {
                     Player.STATE_IDLE -> {
                         // 播放器处于空闲状态
                     }
+
                     Player.STATE_BUFFERING -> {
                         // 播放器缓冲中
                     }
+
                     Player.STATE_READY -> {
                         // 播放器准备好，可以播放
-//                        onPlayStart()
+                        onPlayStart()
                     }
+
                     Player.STATE_ENDED -> {
                         // 播放结束
                     }
@@ -90,5 +87,79 @@ object ExoPlayerSupplier {
             }
         })
         return exoPlayer
+    }
+
+    fun initializeExoPlayer(
+        context: Context,
+        videoUrl: String,
+        onPlayStart: () -> Unit
+    ): ExoPlayer {
+        val loadControl = DefaultLoadControl.Builder()
+            .setBufferDurationsMs(500, 10_000, 500, 500)
+            .setTargetBufferBytes(C.LENGTH_UNSET) // 目标缓冲大小
+            .setPrioritizeTimeOverSizeThresholds(true)  // 优先考虑时间
+            .build()
+
+        val cacheDataSourceFactory = CacheDataSource.Factory()
+            .setCache(ExoPlayerManager.simpleCache!!)
+            .setUpstreamDataSourceFactory(DefaultHttpDataSource.Factory())
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+
+        val mediaSourceFactory = DefaultMediaSourceFactory(cacheDataSourceFactory)
+
+        val mediaItem = MediaItem.fromUri(videoUrl)
+
+        val mediaSource = HlsMediaSource.Factory(cacheDataSourceFactory)
+            .createMediaSource(mediaItem)
+
+        return ExoPlayer.Builder(context)
+            .setLoadControl(loadControl)
+            .setMediaSourceFactory(mediaSourceFactory)
+            .build().apply {
+            repeatMode = ExoPlayer.REPEAT_MODE_ONE
+            setMediaSource(mediaSource, false)
+            prepare()
+
+            addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(state: Int) {
+                    Log.d("ExoPlayer", "onPlaybackStateChanged() state: $state")
+                    when (state) {
+                        Player.STATE_IDLE -> {
+                            Log.d("ExoPlayer", "Player is idle")
+                        }
+
+                        Player.STATE_BUFFERING -> {
+                            Log.d("ExoPlayer", "Player is buffering")
+                        }
+
+                        Player.STATE_READY -> {
+                            Log.d("ExoPlayer", "Player is ready to play")
+                            onPlayStart()
+                        }
+
+                        Player.STATE_ENDED -> {
+                            Log.d("ExoPlayer", "Playback ended")
+                        }
+                    }
+                }
+
+                override fun onRenderedFirstFrame() {
+                    Log.d("ExoPlayer", "onRenderedFirstFrame()")
+                }
+
+                override fun onPlayerError(error: PlaybackException) {
+                    Log.e("ExoPlayer", "Playback error: ${error.message}")
+                }
+
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    if (isPlaying) {
+                        Log.d("ExoPlayer", "Player is playing")
+                        onPlayStart()
+                    } else {
+                        Log.d("ExoPlayer", "Player is paused")
+                    }
+                }
+            })
+        }
     }
 }

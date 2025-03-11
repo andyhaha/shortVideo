@@ -19,7 +19,6 @@ class VideoListActivity : ComponentActivity() {
 
     private lateinit var binding: ActivityVideoListBinding
     private lateinit var videoListAdapter: ExoVideoListAdapter
-//    private lateinit var videoListAdapter: ExoVideoListAdapter2
 
     private val viewModel: VideoListViewModel by viewModels()
 
@@ -34,8 +33,6 @@ class VideoListActivity : ComponentActivity() {
     }
 
     private fun initViewPager() {
-//        videoListAdapter = VideoListAdapter()
-//        videoListAdapter = ExoVideoListAdapter2(this)
         videoListAdapter = ExoVideoListAdapter()
         binding.viewPager.apply {
             orientation = ViewPager2.ORIENTATION_VERTICAL

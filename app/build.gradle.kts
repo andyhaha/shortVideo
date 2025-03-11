@@ -64,5 +64,4 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
 
     implementation(project(":feature:videolist"))
-    implementation(project(":libs:flexplayer"))
 }
