@@ -110,6 +110,7 @@ object ExoPlayerSupplier {
         val mediaItem = MediaItem.fromUri(videoUrl)
 
         val mediaSource = HlsMediaSource.Factory(cacheDataSourceFactory)
+            .setAllowChunklessPreparation(true)
             .createMediaSource(mediaItem)
 
         return ExoPlayer.Builder(context)

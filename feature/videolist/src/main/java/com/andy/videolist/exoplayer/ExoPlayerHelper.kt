@@ -67,7 +67,7 @@ class ExoPlayerHelper : SimpleLifeCycle {
                 context = context,
                 videoUrl = videoUrl,
                 onPlayStart = {
-//                    videoViewHolder.binding.imagePause.gone()
+                    videoViewHolder.binding.imagePause.gone()
 //                    videoViewHolder.binding.coverImage.gone()
 //                    videoViewHolder.binding.playerView.visible()
                 }
