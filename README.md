@@ -26,6 +26,7 @@
 - **Moshi**: 用于解析 JSON 数据，提高了数据序列化和反序列化的效率。
 - **Coil**: 用于图像加载，提供平滑的图像处理和缓存功能。
 - **LiteAVSDK_UGC**: 使用TXVodPlayer实现视频播放、缓存、预加载等功能。
+- **Androidx Media3**: 使用Androidx Media3的ExoPlayer实现视频播放、缓存、预加载等功能。
 
 ## 关键点
 
