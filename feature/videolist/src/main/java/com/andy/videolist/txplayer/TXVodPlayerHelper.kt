@@ -5,7 +5,7 @@ import android.util.SparseArray
 import com.andy.common.gone
 import com.andy.common.visible
 import com.andy.videolist.ui.SimpleLifeCycle
-import com.andy.videolist.ui.VideoListAdapter
+import com.andy.videolist.ui.TXVideoListAdapter
 
 /**
  * TXVodPlayerHelper 负责管理多个视频播放器的生命周期和状态。
@@ -33,7 +33,7 @@ class TXVodPlayerHelper : SimpleLifeCycle {
      *
      * @param holder 需要切换播放状态的 VideoViewHolder
      */
-    fun togglePlayerPlayback(holder: VideoListAdapter.VideoViewHolder) {
+    fun togglePlayerPlayback(holder: TXVideoListAdapter.VideoViewHolder) {
         getPlayerWrapper(holder.adapterPosition)?.let {
             if (it.player.isPlaying) {
                 it.player.pause()
@@ -54,7 +54,7 @@ class TXVodPlayerHelper : SimpleLifeCycle {
      * @param videoUrl 播放的视频 url
      */
     fun createAndAddPlayerWrapper(
-        videoViewHolder: VideoListAdapter.VideoViewHolder,
+        videoViewHolder: TXVideoListAdapter.VideoViewHolder,
         videoUrl: String
     ) {
         val context = videoViewHolder.binding.root.context
@@ -87,7 +87,7 @@ class TXVodPlayerHelper : SimpleLifeCycle {
      *
      * @param videoViewHolder 当前视频项的 ViewHolder，表示要操作的播放器所在的视图
      */
-    fun pauseAndRemoveOffscreenPlayer(videoViewHolder: VideoListAdapter.VideoViewHolder) {
+    fun pauseAndRemoveOffscreenPlayer(videoViewHolder: TXVideoListAdapter.VideoViewHolder) {
         val iterator = playerWrappers.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()

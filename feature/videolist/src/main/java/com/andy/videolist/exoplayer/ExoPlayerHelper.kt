@@ -3,6 +3,7 @@ package com.andy.videolist.exoplayer
 import android.util.Log
 import android.util.SparseArray
 import androidx.annotation.OptIn
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.media3.common.util.UnstableApi
 import com.andy.common.gone
 import com.andy.common.visible
@@ -16,7 +17,6 @@ import com.andy.videolist.ui.SimpleLifeCycle
  * 并在视图离屏时释放资源。
  */
 class ExoPlayerHelper : SimpleLifeCycle {
-
     /**
      * 存储当前播放器在RecyclerView中的位置和播放时间
      */
@@ -66,10 +66,9 @@ class ExoPlayerHelper : SimpleLifeCycle {
             player = ExoPlayerSupplier.initializeExoPlayer(
                 context = context,
                 videoUrl = videoUrl,
-                onPlayStart = {
+                onPlaying = {
                     videoViewHolder.binding.imagePause.gone()
-//                    videoViewHolder.binding.coverImage.gone()
-//                    videoViewHolder.binding.playerView.visible()
+                    videoViewHolder.binding.coverImage.gone()
                 }
             ),
             holder = videoViewHolder

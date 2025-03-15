@@ -40,7 +40,8 @@ class ExoVideoListAdapter : RecyclerView.Adapter<ExoVideoListAdapter.VideoViewHo
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        val binding = ItemExoVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemExoVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return VideoViewHolder(binding)
     }
 
@@ -59,7 +60,10 @@ class ExoVideoListAdapter : RecyclerView.Adapter<ExoVideoListAdapter.VideoViewHo
         val videoItem = items[holder.bindingAdapterPosition]
         val context = holder.binding.root.context
         val videoUrl = videoItem.getAdaptiveVideoUrl(context)
-        Log.d("ViewPager2", "View 加入屏幕 第${holder.bindingAdapterPosition + 1}页, videoUrl = $videoUrl")
+        Log.d(
+            "ViewPager2",
+            "View 加入屏幕 第${holder.bindingAdapterPosition + 1}页, videoUrl = $videoUrl"
+        )
 
         playerHelper.createAndAddPlayerWrapper(
             videoViewHolder = holder,

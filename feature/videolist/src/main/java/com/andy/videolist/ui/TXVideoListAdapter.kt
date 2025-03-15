@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.andy.videolist.databinding.ItemVideoBinding
+import com.andy.videolist.databinding.ItemTxVideoBinding
 import com.andy.videolist.domain.model.VideoItem
 import com.andy.videolist.txplayer.TXVodPlayerHelper
 import com.andy.videolist.utils.getAdaptiveVideoUrl
@@ -13,7 +13,7 @@ import com.andy.videolist.utils.getAdaptiveVideoUrl
 /**
  * 视频列表适配器
  */
-class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(), SimpleLifeCycle {
+class TXVideoListAdapter : RecyclerView.Adapter<TXVideoListAdapter.VideoViewHolder>(), SimpleLifeCycle {
     private val items: MutableList<VideoItem> = mutableListOf()
 
     /**
@@ -29,7 +29,7 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
     }
 
     inner class VideoViewHolder(
-        val binding: ItemVideoBinding,
+        val binding: ItemTxVideoBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -40,7 +40,7 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        val binding = ItemVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemTxVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return VideoViewHolder(binding)
     }
 

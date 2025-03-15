@@ -11,14 +11,15 @@ import java.io.File
 @UnstableApi
 object ExoPlayerManager {
     var simpleCache: SimpleCache? = null
+        private set
 
     @OptIn(UnstableApi::class)
     fun init(context: Context) {
         val cacheDir = File(context.cacheDir, "exo_video")
         simpleCache = SimpleCache(
             cacheDir,
-            // 500M 缓存
-            LeastRecentlyUsedCacheEvictor(500 * 1024 * 1024L),
+            // 200M 缓存
+            LeastRecentlyUsedCacheEvictor(200 * 1024 * 1024L),
             StandaloneDatabaseProvider(context)
         )
     }

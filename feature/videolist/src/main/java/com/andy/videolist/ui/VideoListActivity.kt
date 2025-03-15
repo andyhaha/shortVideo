@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class VideoListActivity : ComponentActivity() {
-
     private lateinit var binding: ActivityVideoListBinding
     private lateinit var videoListAdapter: ExoVideoListAdapter
 
