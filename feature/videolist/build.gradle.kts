@@ -60,5 +60,15 @@ dependencies {
     ksp(libs.google.dagger.hilt.compiler)
     implementation(libs.google.dagger.hilt.android)
 
+    // android media3 exoplayer
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.dash)
+    implementation(libs.androidx.media3.ui)
+
+    // For HLS playback support with ExoPlayer
+    implementation (libs.androidx.media3.exoplayer.hls)
+    // For SmoothStreaming playback support with ExoPlayer
+    implementation(libs.androidx.media3.exoplayer.smoothstreaming)
+
     implementation(project(":libs:common"))
 }

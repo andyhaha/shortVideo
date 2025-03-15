@@ -1,5 +1,6 @@
-package com.andy.videolist.ui
+package com.andy.videolist.txplayer
 
+import com.andy.videolist.ui.TXVideoListAdapter
 import com.tencent.rtmp.TXVodPlayer
 
 /**
@@ -7,7 +8,7 @@ import com.tencent.rtmp.TXVodPlayer
  */
 data class TXVodPlayerWrapper(
     val player: TXVodPlayer,
-    val holder: VideoListAdapter.VideoViewHolder,
+    val holder: TXVideoListAdapter.VideoViewHolder,
     // 用户手动暂停标志位
     var isManualPaused: Boolean = false
 )

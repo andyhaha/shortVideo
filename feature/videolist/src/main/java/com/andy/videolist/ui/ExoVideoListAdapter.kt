@@ -5,21 +5,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.andy.videolist.databinding.ItemVideoBinding
+import com.andy.videolist.databinding.ItemExoVideoBinding
 import com.andy.videolist.domain.model.VideoItem
+import com.andy.videolist.exoplayer.ExoPlayerHelper
 import com.andy.videolist.utils.getAdaptiveVideoUrl
 
 /**
  * 视频列表适配器
  */
-class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(), SimpleLifeCycle {
+class ExoVideoListAdapter : RecyclerView.Adapter<ExoVideoListAdapter.VideoViewHolder>(), SimpleLifeCycle {
     private val items: MutableList<VideoItem> = mutableListOf()
 
     /**
      * 视频帮助类
      */
     private val playerHelper by lazy(LazyThreadSafetyMode.NONE) {
-        TXVodPlayerHelper()
+        ExoPlayerHelper()
     }
 
     fun updateData(list: List<VideoItem>) {
@@ -28,7 +29,7 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
     }
 
     inner class VideoViewHolder(
-        val binding: ItemVideoBinding,
+        val binding: ItemExoVideoBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -39,7 +40,8 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        val binding = ItemVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemExoVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return VideoViewHolder(binding)
     }
 
@@ -49,15 +51,19 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
             placeholder(android.R.color.black)
             error(android.R.color.black)
         }
+        Log.d("ViewPager2", "onBindViewHolder() 第${position + 1}页")
     }
 
     override fun onViewAttachedToWindow(holder: VideoViewHolder) {
         super.onViewAttachedToWindow(holder)
-        Log.d("ViewPager2", "View 加入屏幕 第${holder.adapterPosition + 1}页")
-        val videoItem = items[holder.adapterPosition]
+        Log.d("ViewPager2", "View 加入屏幕 第${holder.bindingAdapterPosition + 1}页")
+        val videoItem = items[holder.bindingAdapterPosition]
         val context = holder.binding.root.context
         val videoUrl = videoItem.getAdaptiveVideoUrl(context)
-        Log.d("ViewPager2", "View 加入屏幕 第${holder.adapterPosition + 1}页, videoUrl = $videoUrl")
+        Log.d(
+            "ViewPager2",
+            "View 加入屏幕 第${holder.bindingAdapterPosition + 1}页, videoUrl = $videoUrl"
+        )
 
         playerHelper.createAndAddPlayerWrapper(
             videoViewHolder = holder,
@@ -67,8 +73,24 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>(
 
     override fun onViewDetachedFromWindow(holder: VideoViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        Log.d("ViewPager2", "View 离屏 第${holder.adapterPosition + 1}页")
+        Log.d("ViewPager2", "View 离屏 第${holder.bindingAdapterPosition + 1}页")
         playerHelper.pauseAndRemoveOffscreenPlayer(holder)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        Log.d("ViewPager2", "onAttachedToRecyclerView()")
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        Log.d("ViewPager2", "onAttachedToRecyclerView()")
+    }
+
+    override fun onViewRecycled(holder: VideoViewHolder) {
+        super.onViewRecycled(holder)
+        holder.binding.playerView.player?.release()
+        Log.d("ViewPager2", "onViewRecycled() 第${holder.bindingAdapterPosition + 1}页")
     }
 
     override fun getItemCount(): Int = items.size
