@@ -18,9 +18,12 @@ import androidx.media3.exoplayer.hls.playlist.DefaultHlsPlaylistParserFactory
 import androidx.media3.exoplayer.hls.playlist.HlsMultivariantPlaylist
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 
+/**
+ * ExoPlayerSupplier 用于提供 ExoPlayer 实例。
+ */
 @UnstableApi
 object ExoPlayerSupplier {
-    private const val TAG = "ExoPlayerSupplier"
+    private const val TAG = "ExoPlayer"
     private const val MIN_BUFFER_MS = 1_000  // 最小缓冲时间（1秒）
     private const val MAX_BUFFER_MS = 15_000 // 最大缓冲时间（15秒）
     private const val BUFFER_FOR_PLAYBACK_MS = 1_000 // 播放所需缓冲时间（1秒）
@@ -72,41 +75,41 @@ object ExoPlayerSupplier {
 
                 addListener(object : Player.Listener {
                     override fun onPlaybackStateChanged(state: Int) {
-                        Log.d("ExoPlayer", "onPlaybackStateChanged() state: $state")
+                        Log.d(TAG, "onPlaybackStateChanged() state: $state")
                         when (state) {
                             Player.STATE_IDLE -> {
-                                Log.d("ExoPlayer", "Player is idle")
+                                Log.d(TAG, "Player is idle")
                             }
 
                             Player.STATE_BUFFERING -> {
-                                Log.d("ExoPlayer", "Player is buffering")
+                                Log.d(TAG, "Player is buffering")
                             }
 
                             Player.STATE_READY -> {
-                                Log.d("ExoPlayer", "Player is ready to play")
+                                Log.d(TAG, "Player is ready to play")
                                 onPlaying()
                             }
 
                             Player.STATE_ENDED -> {
-                                Log.d("ExoPlayer", "Playback ended")
+                                Log.d(TAG, "Playback ended")
                             }
                         }
                     }
 
                     override fun onRenderedFirstFrame() {
-                        Log.d("ExoPlayer", "onRenderedFirstFrame()")
+                        Log.d(TAG, "onRenderedFirstFrame()")
                     }
 
                     override fun onPlayerError(error: PlaybackException) {
-                        Log.e("ExoPlayer", "Playback error: ${error.message}")
+                        Log.e(TAG, "Playback error: ${error.message}")
                     }
 
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
                         if (isPlaying) {
-                            Log.d("ExoPlayer", "Player is playing")
+                            Log.d(TAG, "Player is playing")
                             onPlaying()
                         } else {
-                            Log.d("ExoPlayer", "Player is paused")
+                            Log.d(TAG, "Player is paused")
                         }
                     }
                 })
