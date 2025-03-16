@@ -12,10 +12,9 @@ import com.andy.videolist.domain.model.VideoItem
  * @param context 上下文对象，用于检查网络状态
  * @return 适合当前网络环境的视频 URL
  */
-fun VideoItem.getAdaptiveVideoUrl(context: Context): String {
-    return if (NetworkUtil.isConnectedToWifi(context)) {
-        videoUrlHd
-    } else {
-        videoUrl
-    }
+fun VideoItem.getAdaptiveVideoUrl(context: Context): String = when {
+    NetworkUtil.isConnectedToWifi(context) -> videoUrlHd
+    NetworkUtil.isNetworkUnavailable(context) -> videoUrlHd
+    else -> videoUrl
 }
+

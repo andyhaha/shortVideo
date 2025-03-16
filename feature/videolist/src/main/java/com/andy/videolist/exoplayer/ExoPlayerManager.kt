@@ -8,6 +8,9 @@ import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import java.io.File
 
+/**
+ * ExoPlayerManager 用于管理 ExoPlayer 的缓存和其初始化。
+ */
 @UnstableApi
 object ExoPlayerManager {
     var simpleCache: SimpleCache? = null

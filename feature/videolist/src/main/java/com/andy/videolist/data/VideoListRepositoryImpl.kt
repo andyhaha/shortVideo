@@ -19,11 +19,14 @@ class VideoListRepositoryImpl @Inject constructor(
     private val context: Context
 ) : VideoListRepository {
     companion object {
-        // mock数据在assets目录下的名称
+        /**
+         * assets目录下mock数据的文件名
+         */
         private const val JSON_FILE_NAME = "video_list_mock.json"
     }
 
-    private val moshi: Moshi = Moshi.Builder().build()
+    private val moshi: Moshi = Moshi.Builder()
+        .build()
     @OptIn(ExperimentalStdlibApi::class)
     private val jsonAdapter = moshi.adapter<VideoListBean>()
 

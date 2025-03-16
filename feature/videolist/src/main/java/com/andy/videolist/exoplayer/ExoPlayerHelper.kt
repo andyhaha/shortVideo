@@ -3,7 +3,6 @@ package com.andy.videolist.exoplayer
 import android.util.Log
 import android.util.SparseArray
 import androidx.annotation.OptIn
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.media3.common.util.UnstableApi
 import com.andy.common.gone
 import com.andy.common.visible
